@@ -49,8 +49,8 @@ public:
     
     vector(const vector& other) : data_(nullptr), size_(0), capacity_(0) {
         if (other.size_ > 0) {
-            data_ = static_cast<T*>(::operator new(other.capacity_ * sizeof(T)));
-            capacity_ = other.capacity_;
+            data_ = static_cast<T*>(::operator new(other.size_ * sizeof(T)));
+            capacity_ = other.size_;
             for (size_t i = 0; i < other.size_; ++i) {
                 ::new (&data_[i]) T(other.data_[i]);
             }
@@ -78,10 +78,10 @@ public:
                 data_[i].~T();
             }
             
-            if (other.capacity_ > capacity_) {
+            if (other.size_ > capacity_) {
                 ::operator delete(data_);
-                data_ = static_cast<T*>(::operator new(other.capacity_ * sizeof(T)));
-                capacity_ = other.capacity_;
+                data_ = static_cast<T*>(::operator new(other.size_ * sizeof(T)));
+                capacity_ = other.size_;
             }
             
             for (size_t i = 0; i < other.size_; ++i) {
