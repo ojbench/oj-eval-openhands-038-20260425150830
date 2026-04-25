@@ -65,6 +65,7 @@ class ACMOJClient:
         except requests.exceptions.RequestException as e:
             print(f"API Request failed: {e}")
             if 'response' in locals() and response:
+                print(f"Response status: {response.status_code}")
                 print(f"Response text: {response.text}")
             return None
 
@@ -120,6 +121,11 @@ def main():
     submit_parser.add_argument("--code-file", type=str, required=True,
                                help="Path to the source code file")
 
+    # Submit Git repository
+    git_submit_parser = subparsers.add_parser("submit-git", help="Submit a Git repository")
+    git_submit_parser.add_argument("--problem-id", type=int, required=True, help="Problem ID")
+    git_submit_parser.add_argument("--git-url", type=str, required=True, help="Git repository URL")
+
     # Sub-command for checking submission status
     status_parser = subparsers.add_parser("status", help="Check submission status")
     status_parser.add_argument("--submission-id", type=int, required=True, help="Submission ID")
@@ -149,6 +155,8 @@ def main():
 
         result = client.submit_code(args.problem_id, args.language, code_text)
 
+    elif args.command == "submit-git":
+        result = client.submit_git(args.problem_id, args.git_url)
     elif args.command == "status":
         result = client.get_submission_detail(args.submission_id)
     elif args.command == "abort":
