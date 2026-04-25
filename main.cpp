@@ -3,8 +3,10 @@
 #include <algorithm>
 #include <stdexcept>
 
+namespace sjtu {
+
 template<typename T>
-class sjtu_vector {
+class vector {
 private:
     T* data_;
     size_t size_;
@@ -34,9 +36,9 @@ public:
     using iterator = T*;
     using const_iterator = const T*;
     
-    sjtu_vector() : data_(nullptr), size_(0), capacity_(0) {}
+    vector() : data_(nullptr), size_(0), capacity_(0) {}
     
-    explicit sjtu_vector(size_t n) : data_(nullptr), size_(0), capacity_(0) {
+    explicit vector(size_t n) : data_(nullptr), size_(0), capacity_(0) {
         if (n > 0) {
             data_ = static_cast<T*>(::operator new(n * sizeof(T)));
             capacity_ = n;
@@ -47,7 +49,7 @@ public:
         }
     }
     
-    sjtu_vector(size_t n, const T& val) : data_(nullptr), size_(0), capacity_(0) {
+    vector(size_t n, const T& val) : data_(nullptr), size_(0), capacity_(0) {
         if (n > 0) {
             data_ = static_cast<T*>(::operator new(n * sizeof(T)));
             capacity_ = n;
@@ -58,7 +60,7 @@ public:
         }
     }
     
-    sjtu_vector(const sjtu_vector& other) : data_(nullptr), size_(0), capacity_(0) {
+    vector(const vector& other) : data_(nullptr), size_(0), capacity_(0) {
         if (other.size_ > 0) {
             data_ = static_cast<T*>(::operator new(other.size_ * sizeof(T)));
             capacity_ = other.size_;
@@ -69,19 +71,19 @@ public:
         }
     }
     
-    sjtu_vector(sjtu_vector&& other) noexcept 
+    vector(vector&& other) noexcept 
         : data_(other.data_), size_(other.size_), capacity_(other.capacity_) {
         other.data_ = nullptr;
         other.size_ = 0;
         other.capacity_ = 0;
     }
     
-    ~sjtu_vector() {
+    ~vector() {
         clear();
         ::operator delete(data_);
     }
     
-    sjtu_vector& operator=(const sjtu_vector& other) {
+    vector& operator=(const vector& other) {
         if (this != &other) {
             clear();
             if (other.size_ > capacity_) {
@@ -97,7 +99,7 @@ public:
         return *this;
     }
     
-    sjtu_vector& operator=(sjtu_vector&& other) noexcept {
+    vector& operator=(vector&& other) noexcept {
         if (this != &other) {
             clear();
             ::operator delete(data_);
@@ -281,43 +283,11 @@ public:
         return data_ + start;
     }
     
-    void swap(sjtu_vector& other) noexcept {
+    void swap(vector& other) noexcept {
         std::swap(data_, other.data_);
         std::swap(size_, other.size_);
         std::swap(capacity_, other.capacity_);
     }
 };
 
-int main() {
-    // Read and execute commands from stdin
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
-    int n;
-    std::cin >> n;
-    
-    sjtu_vector<int> vec;
-    
-    for (int i = 0; i < n; ++i) {
-        std::string cmd;
-        std::cin >> cmd;
-        
-        if (cmd == "push_back") {
-            int val;
-            std::cin >> val;
-            vec.push_back(val);
-        } else if (cmd == "pop_back") {
-            vec.pop_back();
-        } else if (cmd == "size") {
-            std::cout << vec.size() << '\n';
-        } else if (cmd == "get") {
-            int idx;
-            std::cin >> idx;
-            std::cout << vec[idx] << '\n';
-        } else if (cmd == "clear") {
-            vec.clear();
-        }
-    }
-    
-    return 0;
-}
+} // namespace sjtu
